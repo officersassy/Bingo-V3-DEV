@@ -1,0 +1,47 @@
+GENERAL SASSY GAMES V3.0.1 — PRIVATE DEVELOPMENT BUILD
+
+PURPOSE
+- Keep the current V2.5.1 website/repository live and untouched.
+- Put this V3 build in a SEPARATE GitHub repository (recommended name: Bingo-V3-DEV).
+- Both sites use the same Firebase project and same existing account/profile.
+- The V3 Casino NEVER wagers v2/profiles/{uid}/coins in this development build.
+- Casino test money lives only under v3/dev and is accessed through server functions.
+
+PRIVATE ACCESS
+- Account registration is disabled on the V3 DEV login page.
+- V3 DEV is owner/admin-only by default.
+- Casino functions independently enforce V3 dev access server-side.
+- The GitHub Pages URL itself is not secret/private, but unapproved accounts cannot use the Casino backend.
+
+FIREBASE SAFETY
+- DO NOT publish FIREBASE-RULES-FINAL.json for this test build.
+- Existing V2 Realtime Database rules can stay exactly as they are.
+- V3 dev Casino uses Firebase Admin SDK and private v3/dev paths.
+- Functions are in a separate Firebase codebase: functions-v3dev.
+- Deploying only functions:v3dev does NOT deploy/replace the existing default V2 functions codebase.
+
+FIRST SETUP
+1. Create a new GitHub repository, e.g. Bingo-V3-DEV.
+2. Upload this V3 DEV website to that repo and enable GitHub Pages.
+3. In PowerShell inside this extracted folder:
+   firebase.cmd use --add
+   Choose bingo-5174e and alias default (only if this folder is not already linked).
+4. Install ONLY the V3 dev functions:
+   cd functions-v3dev
+   npm.cmd install
+   cd ..
+5. Syntax check:
+   node -e "require('./functions-v3dev/index.js'); console.log('V3 DEV FUNCTIONS LOADED OK')"
+6. Deploy ONLY the isolated V3 development function codebase:
+   firebase.cmd deploy --only functions:v3dev
+
+DO NOT run `firebase deploy --only functions` during V3 testing. The :v3dev suffix is deliberate.
+
+TEST WALLET
+- Starts at 100,000 test coins.
+- Casino Control has a reset button to return your test wallet to 100,000.
+- House starts at 250,000 test coins.
+- Break it, reset it, change odds, and test freely. None of this changes your live V2 Sassy Coin balance.
+
+RELEASE LATER
+When V3 is actually ready for release, we will deliberately replace the test-wallet layer with the real shared Sassy Coin economy and do a separate production audit.

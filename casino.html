@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+  <title>Sassy Casino | General Sassy Games V3 DEV</title>
+  <link rel="stylesheet" href="./style.css?v=3.0.1-dev">
+  <link rel="stylesheet" href="./casino.css?v=3.0.1-dev">
+</head>
+<body class="casino-body">
+  <div class="background"></div>
+  <main class="casino-shell" id="casinoShell">
+    <header class="casino-topbar">
+      <a class="casino-back" href="./hub.html">← Games</a>
+      <div><span class="eyebrow">🧪 V3 PRIVATE DEVELOPMENT CASINO</span><h1>🎰 SASSY CASINO</h1></div>
+      <div class="casino-wallet"><small id="casinoPlayer">Player</small><span id="casinoTitle" class="casino-player-title"></span><strong>🧪 <span id="casinoCoins">--</span> TEST COINS</strong></div>
+    </header>
+
+    <section class="casino-marquee"><div><span>DEV HOUSE OPEN</span><h2>Welcome to General Sassy's entirely fictional den of questionable judgement.</h2><p>TEST MODE: wagers use disposable V3 test coins. Your live V2 Sassy Coins are not touched.</p></div><div class="house-vault"><small>DEV HOUSE VAULT</small><strong>🪙 <span id="houseBalance">--</span></strong><span id="houseMood">General Sassy is watching.</span></div></section>
+
+    <nav class="casino-game-tabs">
+      <button data-game="blackjack" class="active">🃏 Blackjack</button>
+      <button data-game="higherlower">⬆️ Higher / Lower</button>
+      <button data-game="slots">🎰 Sassy Slots</button>
+    </nav>
+
+    <section id="casinoBlackjack" class="casino-game-view active">
+      <article class="casino-table blackjack-table" id="blackjackTable">
+        <div class="casino-table-head"><div><span class="casino-label">BLACKJACK</span><h2>General Sassy's Private Table</h2></div><div class="casino-bet-readout">BET <strong id="bjBet">0</strong> 🪙</div></div>
+        <div class="hand-area dealer"><span>GENERAL SASSY <b id="dealerScore"></b></span><div id="dealerCards" class="playing-cards"><div class="empty-card">?</div></div></div>
+        <div id="bjStatus" class="casino-status">Choose your stake and deal.</div>
+        <div class="hand-area player"><span>YOUR HAND <b id="playerScore"></b></span><div id="playerCards" class="playing-cards"><div class="empty-card">♠</div></div></div>
+        <div id="bjBetPanel" class="casino-bet-panel"><span>STAKE</span><div class="chip-row" data-target="bj"><button data-bet="10">10</button><button data-bet="25">25</button><button data-bet="50">50</button><button data-bet="100" class="selected">100</button><button data-bet="250">250</button><button data-bet="500">500</button></div><button id="bjDeal" class="casino-primary">DEAL CARDS</button></div>
+        <div id="bjActions" class="casino-actions hidden"><button id="bjHit">HIT</button><button id="bjStand">STAND</button><button id="bjDouble">DOUBLE</button></div>
+      </article>
+      <aside class="casino-rules"><h3>Blackjack</h3><p>Dealer stands on 17. Natural Blackjack pays 3:2. A push returns your stake. Double is available on your opening two cards.</p><div class="equipped-casino"><span>Card Back <b id="eqCardBack">Classic</b></span><span>Table <b id="eqTable">House Green</b></span><span>Chips <b id="eqChips">Classic</b></span></div></aside>
+    </section>
+
+    <section id="casinoHigherlower" class="casino-game-view">
+      <article class="casino-table hl-table">
+        <div class="casino-table-head"><div><span class="casino-label">HIGHER / LOWER</span><h2>One card. One decision.</h2></div><div class="casino-bet-readout">BET <strong id="hlBet">0</strong> 🪙</div></div>
+        <div class="hl-stage"><div><small>CURRENT CARD</small><div id="hlCurrentCard" class="giant-card">?</div></div><div class="hl-arrow">VS</div><div><small>NEXT CARD</small><div id="hlNextCard" class="giant-card hidden-card">?</div></div></div>
+        <div id="hlStatus" class="casino-status">Choose your stake to reveal the first card.</div>
+        <div id="hlBetPanel" class="casino-bet-panel"><div class="chip-row" data-target="hl"><button data-bet="10">10</button><button data-bet="25">25</button><button data-bet="50">50</button><button data-bet="100" class="selected">100</button><button data-bet="250">250</button><button data-bet="500">500</button></div><button id="hlStart" class="casino-primary">DRAW FIRST CARD</button></div>
+        <div id="hlActions" class="casino-actions hidden"><button id="hlLower">⬇ LOWER</button><button id="hlHigher">⬆ HIGHER</button></div>
+      </article>
+      <aside class="casino-rules"><h3>How it pays</h3><p>Guess correctly and receive 2× your stake back. Same rank is a push and your stake is returned. Ace is high.</p></aside>
+    </section>
+
+    <section id="casinoSlots" class="casino-game-view">
+      <article class="slot-machine" id="slotMachine">
+        <div class="slot-top"><span>GENERAL SASSY'S</span><h2>✨ DISCO DISASTER ✨</h2><small>THREE REELS · ABSOLUTELY NO FINANCIAL ADVICE</small></div>
+        <div class="slot-reels"><div class="slot-reel" id="reel1">👑</div><div class="slot-reel" id="reel2">7️⃣</div><div class="slot-reel" id="reel3">💎</div></div>
+        <div id="slotStatus" class="slot-win">PLACE YOUR BET</div>
+        <div class="slot-controls"><div class="chip-row slot-bets" data-target="slot"><button data-bet="10">10</button><button data-bet="25">25</button><button data-bet="50">50</button><button data-bet="100" class="selected">100</button><button data-bet="250">250</button><button data-bet="500">500</button></div><button id="slotSpin" class="slot-spin">SPIN<br><small id="slotBetText">100 🪙</small></button></div>
+        <div class="slot-paytable"><span>🍒🍒🍒 4×</span><span>🔔🔔🔔 7×</span><span>💎💎💎 12×</span><span>7️⃣7️⃣7️⃣ 25×</span><span>👑👑👑 50×</span><span>🎖️🎖️🎖️ 125×</span><span>Any pair = stake back</span></div>
+      </article>
+      <aside class="casino-rules"><h3>Server-controlled reels</h3><p>The server chooses the result and settles your balance before the animation plays. Editing the page cannot change a spin.</p></aside>
+    </section>
+
+    <div class="dev-casino-banner">🧪 TEST ECONOMY ACTIVE · SAFE TO BREAK · LIVE V2 COINS PROTECTED</div>
+    <section class="casino-footer-stats"><div><span>Total wagered</span><strong id="publicWagered">--</strong></div><div><span>Total hands / spins</span><strong id="publicGames">--</strong></div><div><span>Your casino P/L</span><strong id="playerCasinoPL">--</strong></div></section>
+    <div id="casinoEffectLayer" class="casino-effect-layer"></div><div id="casinoToast" class="casino-toast hidden"></div>
+  </main>
+  <script type="module" src="./casino.js?v=3.0.1-dev"></script>
+</body>
+</html>

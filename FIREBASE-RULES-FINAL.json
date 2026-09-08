@@ -1,0 +1,224 @@
+{
+  "rules": {
+    "bingo": {
+      ".read": true,
+      ".write": true
+    },
+    "v2": {
+      "adminBootstrap": {
+        ".read": "auth != null",
+        ".write": "auth != null && !data.child('claimed').exists() && newData.child('claimed').val() === true && newData.child('uid').val() === auth.uid",
+        "claimed": {
+          ".validate": "newData.val() === true"
+        },
+        "uid": {
+          ".validate": "newData.val() === auth.uid"
+        },
+        "$other": {
+          ".validate": false
+        }
+      },
+      "admins": {
+        "$uid": {
+          ".read": "auth != null && auth.uid === $uid",
+          ".write": "auth != null && auth.uid === $uid && !root.child('v2/adminBootstrap/claimed').exists() && newData.val() === true",
+          ".validate": "newData.val() === true"
+        }
+      },
+      "profiles": {
+        ".read": "auth != null && root.child('v2/admins').child(auth.uid).val() === true",
+        "$uid": {
+          ".read": "auth != null && auth.uid === $uid",
+          ".write": "auth != null && (root.child('v2/admins').child(auth.uid).val() === true || (auth.uid === $uid && (!data.exists() || (newData.child('coins').val() === data.child('coins').val() && newData.child('lifetimeCoins').val() === data.child('lifetimeCoins').val()))))",
+          "uid": {
+            ".validate": "newData.val() === $uid"
+          },
+          "username": {
+            ".validate": "newData.isString() && newData.val().length >= 2 && newData.val().length <= 24"
+          },
+          "email": {
+            ".validate": "newData.isString()"
+          },
+          "coins": {
+            ".validate": "newData.isNumber() && newData.val() >= 0 && ((!data.exists() && newData.val() === 25) || root.child('v2/admins').child(auth.uid).val() === true || (data.exists() && newData.val() === data.val()))"
+          },
+          "lifetimeCoins": {
+            ".validate": "newData.isNumber() && newData.val() >= 0 && ((!data.exists() && newData.val() === 25) || root.child('v2/admins').child(auth.uid).val() === true || (data.exists() && newData.val() === data.val()))"
+          },
+          "role": {
+            ".validate": "newData.val() === 'player'"
+          },
+          "createdAt": {
+            ".validate": "newData.isNumber()"
+          },
+          "updatedAt": {
+            ".validate": "newData.isNumber()"
+          },
+          "stats": {
+            ".write": "auth != null && root.child('v2/admins').child(auth.uid).val() === true"
+          },
+          "inventory": {
+            ".write": "auth != null && root.child('v2/admins').child(auth.uid).val() === true"
+          },
+          "cosmetics": {
+            ".write": "auth != null && (auth.uid === $uid || root.child('v2/admins').child(auth.uid).val() === true)",
+            "dabber": {
+              ".validate": "newData.val() === 'default' || (newData.val() === 'dabber-blue' && root.child('v2/profiles').child($uid).child('inventory/dabber-blue').exists()) || (newData.val() === 'dabber-pink' && root.child('v2/profiles').child($uid).child('inventory/dabber-pink').exists()) || (newData.val() === 'dabber-green' && root.child('v2/profiles').child($uid).child('inventory/dabber-green').exists()) || (newData.val() === 'dabber-gold' && root.child('v2/profiles').child($uid).child('inventory/dabber-gold').exists()) || (newData.val() === 'dabber-plasma' && root.child('v2/profiles').child($uid).child('inventory/dabber-plasma').exists()) || (newData.val() === 'dabber-diamond' && root.child('v2/profiles').child($uid).child('inventory/dabber-diamond').exists()) || (newData.val() === 'dabber-thunder' && root.child('v2/profiles').child($uid).child('inventory/dabber-thunder').exists()) || (newData.val() === 'dabber-sassy' && root.child('v2/profiles').child($uid).child('inventory/dabber-sassy').exists())"
+            },
+            "theme": {
+              ".validate": "newData.val() === 'default' || (newData.val() === 'theme-neon' && root.child('v2/profiles').child($uid).child('inventory/theme-neon').exists()) || (newData.val() === 'theme-gold' && root.child('v2/profiles').child($uid).child('inventory/theme-gold').exists()) || (newData.val() === 'theme-fire' && root.child('v2/profiles').child($uid).child('inventory/theme-fire').exists()) || (newData.val() === 'theme-rainbow' && root.child('v2/profiles').child($uid).child('inventory/theme-rainbow').exists()) || (newData.val() === 'theme-galaxy' && root.child('v2/profiles').child($uid).child('inventory/theme-galaxy').exists()) || (newData.val() === 'theme-obsidian' && root.child('v2/profiles').child($uid).child('inventory/theme-obsidian').exists()) || (newData.val() === 'theme-general' && root.child('v2/profiles').child($uid).child('inventory/theme-general').exists()) || (newData.val() === 'theme-police' && root.child('v2/profiles').child($uid).child('inventory/theme-police').exists()) || (newData.val() === 'theme-casino' && root.child('v2/profiles').child($uid).child('inventory/theme-casino').exists()) || (newData.val() === 'theme-disco' && root.child('v2/profiles').child($uid).child('inventory/theme-disco').exists())"
+            },
+            "effect": {
+              ".validate": "newData.val() === 'default' || (newData.val() === 'confetti-party' && root.child('v2/profiles').child($uid).child('inventory/confetti-party').exists()) || (newData.val() === 'effect-fireworks' && root.child('v2/profiles').child($uid).child('inventory/effect-fireworks').exists()) || (newData.val() === 'effect-coin-rain' && root.child('v2/profiles').child($uid).child('inventory/effect-coin-rain').exists()) || (newData.val() === 'effect-meteor' && root.child('v2/profiles').child($uid).child('inventory/effect-meteor').exists()) || (newData.val() === 'effect-jackpot' && root.child('v2/profiles').child($uid).child('inventory/effect-jackpot').exists()) || (newData.val() === 'effect-lightning' && root.child('v2/profiles').child($uid).child('inventory/effect-lightning').exists()) || (newData.val() === 'effect-sassy-crown' && root.child('v2/profiles').child($uid).child('inventory/effect-sassy-crown').exists())"
+            },
+            "nameEffect": {
+              ".validate": "newData.val() === 'default' || (newData.val() === 'name-vip' && root.child('v2/profiles').child($uid).child('inventory/name-vip').exists()) || (newData.val() === 'name-rainbow' && root.child('v2/profiles').child($uid).child('inventory/name-rainbow').exists()) || (newData.val() === 'name-royal' && root.child('v2/profiles').child($uid).child('inventory/name-royal').exists()) || (newData.val() === 'name-electric' && root.child('v2/profiles').child($uid).child('inventory/name-electric').exists()) || (newData.val() === 'name-general' && root.child('v2/profiles').child($uid).child('inventory/name-general').exists()) || (newData.val() === 'name-menace' && root.child('v2/profiles').child($uid).child('inventory/name-menace').exists()) || (newData.val() === 'name-fraud' && root.child('v2/profiles').child($uid).child('inventory/name-fraud').exists())"
+            },
+            "avatar": {
+              ".write": "auth != null && auth.uid === $uid",
+              ".validate": "newData.val() === 'default' || newData.val() === 'avatar-ball' || newData.val() === 'avatar-smile' || newData.val() === 'avatar-star' || newData.val() === 'avatar-clover' || newData.val() === 'avatar-crown' || (newData.val() === 'avatar-gold-crown' && root.child('v2/profiles').child($uid).child('inventory/avatar-gold-crown').exists()) || (newData.val() === 'avatar-disco' && root.child('v2/profiles').child($uid).child('inventory/avatar-disco').exists()) || (newData.val() === 'avatar-fire' && root.child('v2/profiles').child($uid).child('inventory/avatar-fire').exists()) || (newData.val() === 'avatar-diamond' && root.child('v2/profiles').child($uid).child('inventory/avatar-diamond').exists()) || (newData.val() === 'avatar-leprechaun' && root.child('v2/profiles').child($uid).child('inventory/avatar-leprechaun').exists()) || (newData.val() === 'avatar-disco-queen' && root.child('v2/profiles').child($uid).child('inventory/avatar-disco-queen').exists()) || (newData.val() === 'avatar-skull' && root.child('v2/profiles').child($uid).child('inventory/avatar-skull').exists()) || (newData.val() === 'avatar-devil' && root.child('v2/profiles').child($uid).child('inventory/avatar-devil').exists()) || (newData.val() === 'avatar-general' && root.child('v2/profiles').child($uid).child('inventory/avatar-general').exists()) || (newData.val() === 'avatar-jackpot' && root.child('v2/profiles').child($uid).child('inventory/avatar-jackpot').exists()) || (newData.val() === 'avatar-sassy' && root.child('v2/profiles').child($uid).child('inventory/avatar-sassy').exists())"
+            },
+            "cardBack": {
+              ".validate": "newData.val() === 'default' || (newData.val() === 'casino-cardback-neon' && root.child('v2/profiles').child($uid).child('inventory/casino-cardback-neon').exists()) || (newData.val() === 'casino-cardback-gold' && root.child('v2/profiles').child($uid).child('inventory/casino-cardback-gold').exists()) || (newData.val() === 'casino-cardback-police' && root.child('v2/profiles').child($uid).child('inventory/casino-cardback-police').exists()) || (newData.val() === 'casino-cardback-sassy' && root.child('v2/profiles').child($uid).child('inventory/casino-cardback-sassy').exists())"
+            },
+            "tableSkin": {
+              ".validate": "newData.val() === 'default' || (newData.val() === 'casino-table-velvet' && root.child('v2/profiles').child($uid).child('inventory/casino-table-velvet').exists()) || (newData.val() === 'casino-table-neon' && root.child('v2/profiles').child($uid).child('inventory/casino-table-neon').exists()) || (newData.val() === 'casino-table-gold' && root.child('v2/profiles').child($uid).child('inventory/casino-table-gold').exists())"
+            },
+            "chipSet": {
+              ".validate": "newData.val() === 'default' || (newData.val() === 'casino-chips-diamond' && root.child('v2/profiles').child($uid).child('inventory/casino-chips-diamond').exists()) || (newData.val() === 'casino-chips-police' && root.child('v2/profiles').child($uid).child('inventory/casino-chips-police').exists()) || (newData.val() === 'casino-chips-sassy' && root.child('v2/profiles').child($uid).child('inventory/casino-chips-sassy').exists())"
+            },
+            "casinoTitle": {
+              ".validate": "newData.val() === 'default' || (newData.val() === 'casino-title-shark' && root.child('v2/profiles').child($uid).child('inventory/casino-title-shark').exists()) || (newData.val() === 'casino-title-highroller' && root.child('v2/profiles').child($uid).child('inventory/casino-title-highroller').exists()) || (newData.val() === 'casino-title-nightmare' && root.child('v2/profiles').child($uid).child('inventory/casino-title-nightmare').exists()) || (newData.val() === 'casino-title-atm' && root.child('v2/profiles').child($uid).child('inventory/casino-title-atm').exists())"
+            },
+            "casinoEffect": {
+              ".validate": "newData.val() === 'default' || (newData.val() === 'casino-effect-jackpot' && root.child('v2/profiles').child($uid).child('inventory/casino-effect-jackpot').exists()) || (newData.val() === 'casino-effect-lightning' && root.child('v2/profiles').child($uid).child('inventory/casino-effect-lightning').exists()) || (newData.val() === 'casino-effect-sassy' && root.child('v2/profiles').child($uid).child('inventory/casino-effect-sassy').exists())"
+            }
+          },
+          "achievements": {
+            ".write": "auth != null && root.child('v2/admins').child(auth.uid).val() === true"
+          }
+        }
+      },
+      "publicProfiles": {
+        ".read": "auth != null",
+        "$uid": {
+          ".write": "auth != null && root.child('v2/admins').child(auth.uid).val() === true"
+        }
+      },
+      "lobby": {
+        ".read": "auth != null && root.child('v2/admins').child(auth.uid).val() === true",
+        "$uid": {
+          ".read": "auth != null && auth.uid === $uid",
+          ".write": "auth != null && (auth.uid === $uid || root.child('v2/admins').child(auth.uid).val() === true)"
+        }
+      },
+      "game": {
+        ".read": "auth != null",
+        ".write": "auth != null && root.child('v2/admins').child(auth.uid).val() === true"
+      },
+      "adminState": {
+        ".read": "auth != null && root.child('v2/admins').child(auth.uid).val() === true",
+        ".write": "auth != null && root.child('v2/admins').child(auth.uid).val() === true"
+      },
+      "gamePlayers": {
+        ".read": "auth != null && root.child('v2/admins').child(auth.uid).val() === true",
+        "$uid": {
+          ".read": "auth != null && auth.uid === $uid",
+          ".write": "auth != null && root.child('v2/admins').child(auth.uid).val() === true",
+          "marked": {
+            ".write": "auth != null && auth.uid === $uid"
+          }
+        }
+      },
+      "claims": {
+        ".read": "auth != null && root.child('v2/admins').child(auth.uid).val() === true",
+        "$roundId": {
+          "$stage": {
+            "$uid": {
+              ".write": "auth != null && (root.child('v2/admins').child(auth.uid).val() === true || (auth.uid === $uid && !data.exists() && newData.child('uid').val() === auth.uid && newData.child('name').isString() && newData.child('claimedAt').isNumber()))"
+            }
+          }
+        }
+      },
+      "verifiedWinners": {
+        ".read": "auth != null",
+        ".write": "auth != null && root.child('v2/admins').child(auth.uid).val() === true"
+      },
+      "purchaseRequests": {
+        ".read": "auth != null && root.child('v2/admins').child(auth.uid).val() === true",
+        "$uid": {
+          ".read": "auth != null && auth.uid === $uid",
+          "$requestId": {
+            ".write": "auth != null && (root.child('v2/admins').child(auth.uid).val() === true || (auth.uid === $uid && !data.exists() && newData.child('status').val() === 'pending' && newData.child('itemId').isString() && newData.child('createdAt').isNumber()))"
+          }
+        }
+      },
+      "transactions": {
+        "$uid": {
+          ".read": "auth != null && (auth.uid === $uid || root.child('v2/admins').child(auth.uid).val() === true)",
+          ".write": "auth != null && root.child('v2/admins').child(auth.uid).val() === true"
+        }
+      },
+      "rewards": {
+        ".read": "auth != null && root.child('v2/admins').child(auth.uid).val() === true",
+        ".write": "auth != null && root.child('v2/admins').child(auth.uid).val() === true"
+      },
+      "kicks": {
+        "$uid": {
+          ".read": "auth != null && (auth.uid === $uid || root.child('v2/admins').child(auth.uid).val() === true)",
+          ".write": "auth != null && (root.child('v2/admins').child(auth.uid).val() === true || (auth.uid === $uid && !newData.exists()))"
+        }
+      },
+      "bannedUsernameTerms": {
+        ".read": "auth != null",
+        ".write": "auth != null && root.child('v2/admins').child(auth.uid).val() === true",
+        "$termId": {
+          "term": {
+            ".validate": "newData.isString() && newData.val().length >= 2 && newData.val().length <= 30"
+          },
+          "createdAt": {
+            ".validate": "newData.isNumber()"
+          },
+          "createdBy": {
+            ".validate": "newData.isString()"
+          },
+          "$other": {
+            ".validate": false
+          }
+        }
+      },
+      "sassyEvents": {
+        ".read": "auth != null && root.child('v2/admins').child(auth.uid).val() === true",
+        "$eventId": {
+          ".write": "auth != null && !data.exists() && newData.child('uid').val() === auth.uid && newData.child('type').val() === 'invalid' && newData.child('createdAt').isNumber()"
+        }
+      },
+      "casino": {
+        "publicStats": {
+          ".read": "auth != null",
+          ".write": false
+        },
+        "blackjack": {
+          "$uid": {
+            ".read": "auth != null && auth.uid === $uid",
+            ".write": false
+          }
+        },
+        "higherLower": {
+          "$uid": {
+            ".read": "auth != null && auth.uid === $uid",
+            ".write": false
+          }
+        },
+        "ledger": {
+          ".read": "auth != null && root.child('v2/admins').child(auth.uid).val() === true",
+          ".write": false
+        },
+        "adminLedger": {
+          ".read": "auth != null && root.child('v2/admins').child(auth.uid).val() === true",
+          ".write": false
+        }
+      }
+    }
+  }
+}

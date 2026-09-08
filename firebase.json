@@ -1,0 +1,12 @@
+{
+  "functions": [
+    {
+      "source": "functions",
+      "codebase": "default"
+    },
+    {
+      "source": "functions-v3dev",
+      "codebase": "v3dev"
+    }
+  ]
+}

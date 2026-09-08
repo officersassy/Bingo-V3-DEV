@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>General Sassy Games V3 DEV</title>
+  <link rel="stylesheet" href="./style.css?v=3.0.1-dev">
+</head>
+<body>
+  <div class="background"></div>
+  <main class="auth-shell">
+    <section class="brand-panel">
+      <div class="brand-badge">🧪 GENERAL SASSY GAMES · PRIVATE DEV</div>
+      <h1>GAMES <span>V3 DEV</span></h1>
+      <p class="brand-copy">
+        Private V3 development build using the existing Bingo account system. Casino wagers use TEST COINS only — your live V2 Sassy Coin balance is protected.
+      </p>
+      <div class="feature-row">
+        <article><strong>🪙</strong><span>Sassy Coins</span></article>
+        <article><strong>🎰</strong><span>Sassy Casino</span></article>
+        <article><strong>🏆</strong><span>Achievements</span></article>
+      </div>
+      <blockquote id="sassyQuote">“The currency is fictional. The consequences to your dignity are devastatingly real.”</blockquote>
+    </section>
+
+    <section class="auth-card">
+      <div class="auth-tabs">
+        <button id="loginTab" class="auth-tab active" type="button">Sign In</button>
+        <button id="registerTab" class="auth-tab" type="button" disabled title="Registration is disabled on the private dev build">DEV LOCKED</button>
+      </div>
+
+      <form id="loginForm" class="auth-form">
+        <span class="eyebrow">Welcome back</span>
+        <h2>Sign in</h2>
+        <label>Username or Email<input id="loginUsername" type="text" autocomplete="username" required placeholder="Username or existing email"></label>
+        <label>Password<input id="loginPassword" type="password" autocomplete="current-password" required minlength="6" placeholder="Password"></label>
+        <p class="login-hint">Private test build. Only the existing admin account or an approved V3 tester can enter.</p>
+        <button id="loginButton" class="primary-button" type="submit">🎱 Sign In</button>
+      </form>
+
+      <form id="registerForm" class="auth-form hidden" style="display:none">
+        <span class="eyebrow">New recruit</span>
+        <h2>Create account</h2>
+        <label>Username<input id="registerName" type="text" autocomplete="username" required minlength="2" maxlength="24" pattern="[A-Za-z0-9._-]+" placeholder="Choose a username"></label>
+        <label>Password<input id="registerPassword" type="password" autocomplete="new-password" required minlength="6" placeholder="At least 6 characters"></label>
+        <button id="registerButton" class="primary-button" type="submit">🪙 Create Account + 25 Coins</button>
+      </form>
+
+      <div id="authMessage" class="message-box" aria-live="polite"></div>
+    </section>
+  </main>
+  <div class="dev-warning-strip">🧪 PRIVATE DEVELOPMENT BUILD · NOT FOR RELEASE</div>
+  <script type="module" src="./auth.js?v=3.0.1-dev"></script>
+</body>
+</html>

@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+  <title>Bingo Hall | General Sassy Games V3 DEV</title>
+  <link rel="stylesheet" href="./style.css?v=3.0.1-dev">
+  <link rel="stylesheet" href="./casino.css?v=3.0.1-dev">
+</head>
+<body>
+  <div class="background"></div>
+  <main class="mobile-app-shell">
+    <header class="mobile-topbar">
+      <button id="menuButton" class="hamburger-button" type="button" aria-label="Open menu">☰</button>
+
+      <div class="mobile-title-block">
+        <span class="eyebrow">General Sassy Games V3 · Bingo Hall</span>
+        <h1 id="welcomeName">Loading...</h1>
+      </div>
+
+      <div class="coin-pill"><span>🪙</span><strong id="coinBalance">--</strong><small>Coins</small></div>
+    </header>
+
+    <div id="menuOverlay" class="menu-overlay hidden"></div>
+
+    <aside id="sideMenu" class="side-menu" aria-hidden="true">
+      <div class="side-menu-header">
+        <div>
+          <span class="eyebrow">General Sassy</span>
+          <h2>Menu</h2>
+        </div>
+        <button id="closeMenuButton" class="menu-close-button" type="button" aria-label="Close menu">✕</button>
+      </div>
+
+      <nav class="side-menu-nav">
+        <button id="gamesHubButton" type="button">🎮 <span>Games Hub</span></button>
+        <button id="casinoButton" type="button">🎰 <span>Sassy Casino</span></button>
+        <button data-view="Game" class="active">🎱 <span>Game</span></button>
+        <button data-view="Shop">🛍️ <span>Shop</span></button>
+        <button data-view="Achievements">🏅 <span>Achievements</span></button>
+        <button data-view="Leaderboard">🏆 <span>Leaderboard</span></button>
+        <button data-view="Profile">👤 <span>Profile</span></button>
+        <button id="hostPanelButton" class="host-panel-menu-button hidden" type="button">🎤 <span>Host Panel</span></button>
+      </nav>
+
+      <div class="side-menu-footer">
+        <div class="side-menu-balance">
+          <span>Balance</span>
+          <strong>🪙 <span id="menuCoinBalance">--</span></strong>
+        </div>
+      </div>
+    </aside>
+
+    <section id="viewGame" class="mobile-view active">
+
+      <article id="waitingPanel" class="panel waiting-panel">
+        <div class="waiting-icon">🎖️</div>
+        <span class="panel-kicker">General Sassy Command</span>
+        <h2>Waiting for the next round</h2>
+        <p id="waitingMessage">
+          General Sassy is preparing the battlefield. Try not to spend all your coins before we start.
+        </p>
+        <div class="waiting-pulse">●</div>
+      </article>
+
+      <article id="liveGamePanel" class="panel game-status-panel hidden">
+        <div class="stage-row">
+          <span id="gameModeBadge" class="status-badge">WAITING</span>
+          <strong id="gameStageText">Waiting for host</strong>
+        </div>
+        <div id="currentCall" class="mobile-current-ball">--</div>
+        <div class="game-meta">
+          <span>Called <strong id="calledCount">0</strong></span>
+          <span>Marked <strong id="markedCount">0</strong></span>
+        </div>
+      </article>
+
+      <article class="panel ticket-panel">
+        <div class="panel-heading">
+          <div><span class="panel-kicker">Your ticket</span><h2 id="ticketTitle">Bingo Card</h2></div>
+          <span id="cardTypeBadge" class="status-badge">--</span>
+        </div>
+        <div id="bingoCard" class="v2-card"></div>
+      </article>
+
+      <button id="claimBingoButton" class="claim-button" type="button">🎉 CLAIM BINGO</button>
+      <div id="gameMessage" class="message-box"></div>
+    </section>
+
+    <section id="viewProfile" class="mobile-view">
+      <article class="panel">
+        <div class="profile-avatar" id="profileAvatar">🎱</div>
+        <h2 id="profileName">--</h2>
+        <p id="profileEmail" class="muted-text">--</p>
+        <div class="profile-details">
+          <div><span>Games played</span><strong id="gamesPlayed">0</strong></div>
+          <div><span>Wins</span><strong id="winsCount">0</strong></div>
+          <div><span>Full Houses</span><strong id="fullHouseCount">0</strong></div>
+          <div><span>Lifetime coins</span><strong id="lifetimeCoins">25</strong></div>
+        </div>
+        <div class="equipped-grid">
+          <div><span>Dabber</span><strong id="equippedDabber">Default</strong></div>
+          <div><span>Theme</span><strong id="equippedTheme">Default</strong></div>
+          <div><span>Name Effect</span><strong id="equippedNameEffect">Default</strong></div>
+          <div><span>Avatar</span><strong id="equippedAvatar">Classic Bingo Ball</strong></div>
+        </div>
+        <button id="editNameButton" class="secondary-button" type="button">✏️ Change Name</button>
+        <button id="logoutButton" class="ghost-button full-width" type="button">Sign Out</button>
+      </article>
+    </section>
+
+    <section id="viewShop" class="mobile-view">
+      <article class="sassy-store-hero">
+        <div class="store-hero-copy">
+          <span class="store-superline">GENERAL SASSY PRESENTS</span>
+          <h2>THE SASSY EMPORIUM</h2>
+          <p>Premium cosmetics, ridiculous rarity, and absolutely unnecessary levels of glow.</p>
+          <div class="store-hero-meta">
+            <span>🪙 <strong id="storeCoinBalance">0</strong> coins</span>
+            <span>🎒 <strong id="ownedCosmeticCount">0</strong> owned</span>
+          </div>
+        </div>
+        <div class="store-hero-orb">👑</div>
+      </article>
+
+
+      <article class="panel v25-dashboard">
+        <div class="store-heading-row"><div><span class="panel-kicker">V2.5</span><h2>🔥 Today's Sassy Deal</h2></div><div id="dealBadge" class="store-count">25% OFF</div></div>
+        <div id="dailyDeal" class="v25-feature-strip"></div>
+        <div class="store-heading-row"><div><span class="panel-kicker">General Sassy's picks</span><h2>⭐ Featured</h2></div></div>
+        <div id="featuredItems" class="v25-feature-strip"></div>
+        <div class="v25-stats"><span>❤️ Wishlist <b id="wishlistCount">0</b></span><span>🏆 Collection <b id="collectionProgress">0%</b></span><span>📦 Crates <b id="crateCount">0</b></span></div>
+      </article>
+
+      <article class="panel sassy-crate-card rarity-sassy">
+        <div class="crate-art">
+          <div class="crate-glow"></div>
+          <div class="crate-box">🎁</div>
+        </div>
+        <div class="crate-copy">
+          <span class="rarity-chip rarity-sassy">👑 SASSY CRATE</span>
+          <h2>Mystery Sassy Crate</h2>
+          <p>One random paid cosmetic you do not already own. No free junk. No duplicates.</p>
+          <div class="crate-odds">
+            <span>Common 42%</span><span>Rare 30%</span><span>Epic 18%</span><span>Legendary 8%</span><span>Sassy 2%</span>
+          </div>
+        </div>
+        <button id="openSassyCrateButton" class="crate-buy-button" type="button">OPEN — 1,000 🪙</button>
+      </article>
+
+      <article class="panel store-browser">
+        <div class="store-heading-row">
+          <div>
+            <span class="panel-kicker">Collection</span>
+            <h2>🛍️ Cosmetics</h2>
+          </div>
+          <div class="store-count" id="storeItemCount">0 items</div>
+        </div>
+
+        <div id="storeFilters" class="store-filter-bar">
+          <button data-filter="all" class="active">All</button>
+          <button data-filter="avatar">Avatars</button>
+          <button data-filter="theme">Cards</button>
+          <button data-filter="dabber">Dabbers</button>
+          <button data-filter="nameEffect">Names</button>
+          <button data-filter="effect">Wins</button>
+          <button data-filter="casino">🎰 Casino</button>
+        </div>
+
+        <div class="v25-shop-tools"><button id="wishlistOnly" class="ghost-button" type="button">❤️ Wishlist Only</button><button id="showCrateHistory" class="ghost-button" type="button">📦 Crate History</button></div>
+        <div id="shopList" class="premium-shop-grid"></div>
+        <div id="avatarShopList" class="hidden"></div>
+        <div id="shopMessage" class="message-box"></div>
+      </article>
+    </section>
+
+    <section id="viewAchievements" class="mobile-view">
+      <article class="panel">
+        <span class="panel-kicker">Bragging rights</span>
+        <h2>🏅 Achievements</h2>
+        <div id="achievementList" class="achievement-grid"></div>
+      </article>
+    </section>
+
+    <section id="viewLeaderboard" class="mobile-view">
+      <article class="panel">
+        <span class="panel-kicker">Top players</span>
+        <h2>🏆 Leaderboard</h2>
+        <div id="leaderboardList" class="leaderboard-list">Loading...</div>
+      </article>
+    </section>
+
+  </main>
+
+  <div id="nameModal" class="modal hidden">
+    <div class="modal-card">
+      <h2>Change Player Name</h2>
+      <input id="newPlayerName" type="text" minlength="2" maxlength="24" placeholder="New player name">
+      <div class="modal-actions">
+        <button id="cancelNameButton" class="ghost-button" type="button">Cancel</button>
+        <button id="saveNameButton" class="primary-button" type="button">Save</button>
+      </div>
+      <div id="profileMessage" class="message-box"></div>
+    </div>
+  </div>
+
+
+
+  <div id="crateOverlay" class="crate-overlay hidden">
+    <div id="crateRevealCard" class="crate-reveal-card">
+      <button id="closeCrateOverlay" class="crate-close" type="button">✕</button>
+      <span class="crate-reveal-kicker">SASSY CRATE OPENED</span>
+      <div id="crateRevealIcon" class="crate-reveal-icon">🎁</div>
+      <div id="crateRevealRarity" class="rarity-chip">RARITY</div>
+      <h2 id="crateRevealName">Mystery Item</h2>
+      <p id="crateRevealDescription"></p>
+      <button id="crateEquipButton" class="primary-button hidden" type="button">Equip Now</button>
+    </div>
+  </div>
+
+
+  <div id="storePreviewOverlay" class="crate-overlay hidden"><div class="crate-reveal-card v25-preview-card v251-preview-card"><button id="closeStorePreview" class="crate-close" type="button">✕</button><span class="crate-reveal-kicker">TRY IT ON · NO COINS SPENT</span><div class="v251-preview-top"><div id="previewVisual" class="v251-preview-icon">✨</div><div class="v251-preview-copy"><div id="previewRarity" class="rarity-chip">RARITY</div><h2 id="previewName">Cosmetic</h2><p id="previewDescription"></p><div class="v251-preview-meta"><span id="previewType">COSMETIC</span><strong id="previewOwned">PREVIEW</strong></div></div></div><div id="previewDemo" class="v251-preview-demo">BINGO 42</div><div class="v251-preview-nav"><button id="previewPrev" class="ghost-button" type="button">← PREVIOUS</button><span>Preview only · nothing is equipped or purchased</span><button id="previewNext" class="ghost-button" type="button">NEXT →</button></div></div></div>
+  <div id="crateHistoryOverlay" class="crate-overlay hidden"><div class="crate-reveal-card v25-preview-card"><button id="closeCrateHistory" class="crate-close" type="button">✕</button><span class="crate-reveal-kicker">YOUR LAST DROPS</span><h2>📦 Sassy Crate History</h2><div id="crateHistoryList" class="v25-history"></div></div></div>
+
+  <div id="winnerOverlay" class="winner-overlay hidden">
+    <div class="winner-modal">
+      <div class="winner-icon">🏆</div>
+      <span class="panel-kicker">Bingo Winner</span>
+      <h2 id="winnerTitle">We have a winner!</h2>
+      <div id="winnerNames" class="winner-names"></div>
+      <div id="winnerReward" class="winner-reward hidden"></div>
+      <button id="closeWinnerOverlay" class="primary-button" type="button">Continue</button>
+    </div>
+  </div>
+
+  <div id="toastStack" class="toast-stack"></div>
+
+
+  <div id="confettiLayer" class="confetti-layer" aria-hidden="true"></div>
+
+  
+  <div id="pdPauseModal" class="winner-modal hidden" role="dialog" aria-modal="true" aria-live="assertive">
+    <div class="winner-card pd-pause-card">
+      <div class="winner-icon">🚨</div>
+      <h2 id="pdPauseTitle">BINGO PAUSED</h2>
+      <p id="pdPauseReason">PD duties have called.</p>
+      <div class="pd-pause-last">Last number: <strong id="pdPauseLastCall">--</strong></div>
+      <div id="pdResumeCountdown" class="pd-resume-countdown hidden"></div>
+      <p class="pd-pause-sassy">General Sassy reluctantly authorises actual police work.</p>
+    </div>
+  </div>
+
+
+  <audio id="sassyLoadingAudio" preload="auto" src="./assets/audio/sassy-loading.mp3"></audio>
+  <audio id="bingoWinnerAudio" preload="auto" src="./assets/audio/bingo-winner.mp3"></audio>
+
+<script type="module" src="./player.js?v=3.0.1-dev"></script>
+</body>
+</html>
