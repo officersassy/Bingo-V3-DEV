@@ -1,0 +1,8 @@
+General Sassy Games V3.1.1 PRIVATE DEV — Casino Entry Hotfix
+
+- Removed direct browser read of v3/dev/testers.
+- v3devCasinoEnsure is now the authority for Casino DEV access.
+- Keeps v3/dev protected by backend security.
+- No Firebase Rules change required.
+- No Cloud Functions change/deployment required.
+- V2 is untouched.

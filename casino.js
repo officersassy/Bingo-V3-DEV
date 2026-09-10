@@ -1,6 +1,6 @@
 import { auth,database,functions } from "./firebase.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { ref,onValue,get } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+import { ref,onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 import { httpsCallable } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-functions.js";
 import { SHOP_ITEMS } from "./catalog.js";
 
@@ -15,16 +15,6 @@ function toast(text,type=""){
   clearTimeout(toast.t); toast.t=setTimeout(()=>el.classList.add("hidden"),2800); el.classList.remove("hidden");
 }
 function safeMessage(err){return String(err?.message||"Casino request failed").replace(/^FirebaseError:\s*/i,"");}
-async function isDevTester(uid){
-  try{
-    const [adminSnap,testerSnap]=await Promise.all([
-      get(ref(database,`v2/admins/${uid}`)),
-      get(ref(database,`v3/dev/testers/${uid}`))
-    ]);
-    const tester=testerSnap.val();
-    return adminSnap.val()===true || tester===true || tester?.enabled===true;
-  }catch{return false;}
-}
 function casinoBurst(){
   const id=profile?.cosmetics?.casinoEffect;if(!id)return;
   const layer=$("casinoEffectLayer"),sets={"casino-effect-jackpot":["🎰","🪙","✨"],"casino-effect-lightning":["⚡","🌩️","✨"],"casino-effect-sassy":["👑","🎖️","💎","✨"]},bits=sets[id]||["✨"];
@@ -100,8 +90,22 @@ $("slotSpin").onclick=async()=>{if(busy)return;try{setBusy(true);const data=(awa
 
 onAuthStateChanged(auth,async u=>{
   if(!u){location.href="./index.html";return;}
-  if(!(await isDevTester(u.uid))){location.href="./index.html";return;}
-  user=u;
-  onValue(ref(database,`v2/profiles/${u.uid}`),s=>{profile=s.val();if(!profile)return;$("casinoPlayer").textContent=profile.username||"Player";applyCasinoCosmetics();});
-  try{await snapshot();}catch(e){toast(safeMessage(e),"error");}
+
+  // V3 DEV access is authorised by the server-side callable.
+  // Do not directly read v3/dev/testers here: those paths are intentionally
+  // protected from browser reads.
+  try{
+    const state=await snapshot();
+    user=u;
+    applyEconomy(state);
+    onValue(ref(database,`v2/profiles/${u.uid}`),s=>{
+      profile=s.val();
+      if(!profile)return;
+      $("casinoPlayer").textContent=profile.username||"Player";
+      applyCasinoCosmetics();
+    });
+  }catch(e){
+    console.error("V3 DEV casino access denied",e);
+    location.href="./index.html";
+  }
 });
