@@ -1,0 +1,16 @@
+GENERAL SASSY GAMES V3.1 PRIVATE DEV
+
+Casino polish/stability pass:
+- Keeps V2 live/default functions isolated.
+- V3 casino continues using v3/dev test wallets only.
+- Fixed frontend tester access so v3/dev/testers entries work as intended.
+- Added Blackjack card-deal animation and outcome table feedback.
+- Added Higher/Lower outcome feedback.
+- Improved Slots reel motion and win flash.
+- Improved chip/button interaction.
+- Existing casino card backs, table skins, chip sets, titles and win effects remain supported.
+
+DEPLOYMENT:
+Frontend: upload this pack to Bingo-V3-DEV GitHub only.
+Functions: no backend changes in this V3.1 presentation pass, so no Firebase deploy is required.
+Do not deploy V2/default functions for this update.

@@ -16,7 +16,14 @@ function toast(text,type=""){
 }
 function safeMessage(err){return String(err?.message||"Casino request failed").replace(/^FirebaseError:\s*/i,"");}
 async function isDevTester(uid){
-  try{return (await get(ref(database,`v2/admins/${uid}`))).val()===true;}catch{return false;}
+  try{
+    const [adminSnap,testerSnap]=await Promise.all([
+      get(ref(database,`v2/admins/${uid}`)),
+      get(ref(database,`v3/dev/testers/${uid}`))
+    ]);
+    const tester=testerSnap.val();
+    return adminSnap.val()===true || tester===true || tester?.enabled===true;
+  }catch{return false;}
 }
 function casinoBurst(){
   const id=profile?.cosmetics?.casinoEffect;if(!id)return;
@@ -46,7 +53,15 @@ function cardMarkup(code,hidden=false){
   const suits={S:["♠","black"],H:["♥","red"],D:["♦","red"],C:["♣","black"]}; const [symbol,colour]=suits[m[2]];
   return `<div class="playing-card ${colour}"><span>${m[1]}${symbol}</span><b>${symbol}</b><span>${m[1]}${symbol}</span></div>`;
 }
-function renderHand(target,cards,hideSecond=false){$(target).innerHTML=(cards||[]).map((c,i)=>cardMarkup(c,hideSecond&&i===1)).join("")||`<div class="empty-card">?</div>`;}
+function renderHand(target,cards,hideSecond=false){
+  const el=$(target), previous=el.dataset.cards||"";
+  const next=(cards||[]).join("|")+`:${hideSecond}`;
+  el.innerHTML=(cards||[]).map((c,i)=>cardMarkup(c,hideSecond&&i===1)).join("")||`<div class="empty-card">?</div>`;
+  if(previous!==next){
+    [...el.children].forEach((card,i)=>{card.classList.add("deal-in");card.style.animationDelay=`${i*90}ms`;});
+    el.dataset.cards=next;
+  }
+}
 function setBet(target,n){bets[target]=Number(n);document.querySelectorAll(`.chip-row[data-target="${target}"] button`).forEach(b=>b.classList.toggle("selected",Number(b.dataset.bet)===bets[target])); if(target==="slot")$("slotBetText").textContent=`${fmt(n)} 🧪`;}
 document.querySelectorAll(".chip-row button").forEach(b=>b.onclick=()=>{if(busy)return;setBet(b.closest(".chip-row").dataset.target,Number(b.dataset.bet));});
 document.querySelectorAll(".casino-game-tabs button").forEach(btn=>btn.onclick=()=>{
@@ -61,7 +76,7 @@ function applyCasinoCosmetics(){
   $("casinoShell").dataset.table=c.tableSkin||"default";$("casinoShell").dataset.cardback=c.cardBack||"default";$("casinoShell").dataset.chips=c.chipSet||"default";$("casinoTitle").textContent=c.casinoTitle?cosmeticName(c.casinoTitle,""):"";
 }
 function renderBJ(data){
-  bjState=data||null; const active=data?.state==="active";
+  bjState=data||null; $("blackjackTable").dataset.outcome=data?.outcome||""; const active=data?.state==="active";
   $("bjBet").textContent=fmt(data?.bet||0); renderHand("playerCards",data?.playerCards||[]); renderHand("dealerCards",data?.dealerCards||[],Boolean(data?.dealerHidden));
   $("playerScore").textContent=data?.playerScore!=null?`(${data.playerScore})`:"";$("dealerScore").textContent=data?.dealerScore!=null?`(${data.dealerScore})`:"";
   $("bjStatus").textContent=data?.message||"Choose your stake and deal.";$("bjActions").classList.toggle("hidden",!active);$("bjBetPanel").classList.toggle("hidden",active);$("bjDouble").disabled=!active||!data?.canDouble;
@@ -72,16 +87,16 @@ async function bjAction(action){try{const d=await callFn("v3devCasinoBlackjackAc
 $("bjHit").onclick=()=>bjAction("hit");$("bjStand").onclick=()=>bjAction("stand");$("bjDouble").onclick=()=>bjAction("double");
 function prettyCard(code){const m=String(code||"").match(/^(10|[2-9JQKA])([SHDC])$/);if(!m)return"?";const s={S:"♠",H:"♥",D:"♦",C:"♣"}[m[2]];return `${m[1]}${s}`;}
 function renderHL(data){
-  hlState=data||null;const active=data?.state==="active";$("hlBet").textContent=fmt(data?.bet||0);$("hlCurrentCard").textContent=prettyCard(data?.currentCard);$("hlNextCard").textContent=data?.nextCard?prettyCard(data.nextCard):"?";$("hlNextCard").classList.toggle("hidden-card",!data?.nextCard);$("hlStatus").textContent=data?.message||"Choose your stake to reveal the first card.";$("hlActions").classList.toggle("hidden",!active);$("hlBetPanel").classList.toggle("hidden",active);
+  hlState=data||null; document.querySelector(".hl-table").dataset.outcome=data?.outcome||"";const active=data?.state==="active";$("hlBet").textContent=fmt(data?.bet||0);$("hlCurrentCard").textContent=prettyCard(data?.currentCard);$("hlNextCard").textContent=data?.nextCard?prettyCard(data.nextCard):"?";$("hlNextCard").classList.toggle("hidden-card",!data?.nextCard);$("hlStatus").textContent=data?.message||"Choose your stake to reveal the first card.";$("hlActions").classList.toggle("hidden",!active);$("hlBetPanel").classList.toggle("hidden",active);
 }
-$("hlStart").onclick=async()=>{try{renderHL(await callFn("v3devCasinoHigherLowerStart",{bet:bets.hl}));}catch(e){toast(safeMessage(e),"error");}};
+$("hlStart").onclick=async()=>{try{const d=await callFn("v3devCasinoHigherLowerStart",{bet:bets.hl});renderHL(d);toast("First card revealed. Make your choice.");}catch(e){toast(safeMessage(e),"error");}};
 async function hlGuess(guess){try{const d=await callFn("v3devCasinoHigherLowerGuess",{guess});renderHL(d);toast(d.message,d.outcome==="win"?"win":d.outcome==="loss"?"error":"");if(d.outcome==="win")casinoBurst();}catch(e){toast(safeMessage(e),"error");}}
 $("hlHigher").onclick=()=>hlGuess("higher");$("hlLower").onclick=()=>hlGuess("lower");
 function animateSlots(final){
   const symbols=["🍒","🔔","💎","7️⃣","👑","🎖️"];let ticks=0;$("slotMachine").classList.add("spinning");$("slotStatus").textContent="SPINNING…";
   return new Promise(resolve=>{const timer=setInterval(()=>{ticks++;["reel1","reel2","reel3"].forEach((id,i)=>$(id).textContent=ticks>9+i*3?final[i]:symbols[Math.floor(Math.random()*symbols.length)]);if(ticks>17){clearInterval(timer);$("slotMachine").classList.remove("spinning");resolve();}},70);});
 }
-$("slotSpin").onclick=async()=>{if(busy)return;try{setBusy(true);const data=(await httpsCallable(functions,"v3devCasinoSlotsSpin")({bet:bets.slot,machine:"classic"})).data;if(data?.economy)applyEconomy(data.economy);await animateSlots(data.reels);$("slotStatus").textContent=data.message;$("slotStatus").className=`slot-win ${data.payout>data.bet?"win":data.payout===data.bet?"push":"loss"}`;toast(data.message,data.payout>data.bet?"win":data.payout?"":"error");if(data.payout>data.bet)casinoBurst();}catch(e){toast(safeMessage(e),"error");}finally{setBusy(false);}};
+$("slotSpin").onclick=async()=>{if(busy)return;try{setBusy(true);const data=(await httpsCallable(functions,"v3devCasinoSlotsSpin")({bet:bets.slot,machine:"classic"})).data;if(data?.economy)applyEconomy(data.economy);await animateSlots(data.reels);$("slotStatus").textContent=data.message;$("slotStatus").className=`slot-win ${data.payout>data.bet?"win":data.payout===data.bet?"push":"loss"}`;toast(data.message,data.payout>data.bet?"win":data.payout?"":"error");if(data.payout>data.bet){casinoBurst();document.body.classList.add("casino-win-flash");setTimeout(()=>document.body.classList.remove("casino-win-flash"),900);}}catch(e){toast(safeMessage(e),"error");}finally{setBusy(false);}};
 
 onAuthStateChanged(auth,async u=>{
   if(!u){location.href="./index.html";return;}
