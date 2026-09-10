@@ -111,34 +111,51 @@ async function hlGuess(guess){try{setWaiting("hlNextCard",true,"Flipping…");co
 $("hlHigher").onclick=()=>hlGuess("higher");$("hlLower").onclick=()=>hlGuess("lower");
 function startSlotRoll(){
   const symbols=["🍒","🔔","💎","7️⃣","👑","🎖️"];
+  const startedAt=performance.now();
+  const minimumSpinMs=1450;
   let frame=0,stopped=false,raf=0,last=0;
   $("slotMachine").classList.add("spinning");
+  $("slotStatus").className="slot-win";
   $("slotStatus").textContent="SPINNING…";
+
+  // Keep the visual work deliberately light: roughly 8 symbol updates/second.
+  // This looks smoother on slower phones/laptops than hammering the DOM every frame.
   const tick=t=>{
     if(stopped)return;
-    if(t-last>95){
-      last=t; frame++;
-      ["reel1","reel2","reel3"].forEach((id,i)=>$(id).textContent=symbols[(Math.floor(Math.random()*symbols.length)+frame+i)%symbols.length]);
+    if(t-last>125){
+      last=t;
+      frame++;
+      ["reel1","reel2","reel3"].forEach((id,i)=>{
+        $(id).textContent=symbols[(frame+i+Math.floor(Math.random()*symbols.length))%symbols.length];
+      });
     }
     raf=requestAnimationFrame(tick);
   };
   raf=requestAnimationFrame(tick);
-  return final=>new Promise(resolve=>{
-    stopped=true; cancelAnimationFrame(raf);
-    let i=0;
+
+  return async final=>{
+    // Even if Firebase responds instantly, let the reels visibly spin first.
+    const remaining=Math.max(0,minimumSpinMs-(performance.now()-startedAt));
+    if(remaining)await new Promise(r=>setTimeout(r,remaining));
+
+    stopped=true;
+    cancelAnimationFrame(raf);
+
     const ids=["reel1","reel2","reel3"];
-    const land=()=>{
-      if(i<3){$(ids[i]).textContent=final[i];$(ids[i]).classList.add("reel-land");setTimeout(()=>$(ids[i-1])?.classList.remove("reel-land"),180);i++;setTimeout(land,120);}
-      else{$("slotMachine").classList.remove("spinning");resolve();}
-    };
-    land();
-  });
+    for(let i=0;i<ids.length;i++){
+      $(ids[i]).textContent=final[i];
+      $(ids[i]).classList.add("reel-land");
+      await new Promise(r=>setTimeout(r,230));
+      $(ids[i]).classList.remove("reel-land");
+    }
+    $("slotMachine").classList.remove("spinning");
+  };
 }
 $("slotSpin").onclick=async()=>{
   if(busy)return;
-  const finishRoll=startSlotRoll(); // animation starts immediately while secure result is fetched
+  setBusy(true);
+  const finishRoll=startSlotRoll(); // starts immediately while the secure result is fetched
   try{
-    setBusy(true);
     const data=(await casinoFns.slots({bet:bets.slot,machine:"classic"})).data;
     if(data?.economy)applyEconomy(data.economy);
     await finishRoll(data.reels);
@@ -146,9 +163,14 @@ $("slotSpin").onclick=async()=>{
     $("slotStatus").className=`slot-win ${data.payout>data.bet?"win":data.payout===data.bet?"push":"loss"}`;
     toast(data.message,data.payout>data.bet?"win":data.payout?"":"error");
     if(data.payout>data.bet){casinoBurst();document.body.classList.add("casino-win-flash");setTimeout(()=>document.body.classList.remove("casino-win-flash"),900);}
+
+    // Tiny settle gap so rapid clicking cannot make the machine feel like it is
+    // tripping over the previous animation/update.
+    await new Promise(r=>setTimeout(r,300));
   }catch(e){
     await finishRoll(["?","?","?"]);
     toast(safeMessage(e),"error");
+    await new Promise(r=>setTimeout(r,300));
   }finally{setBusy(false);}
 };
 

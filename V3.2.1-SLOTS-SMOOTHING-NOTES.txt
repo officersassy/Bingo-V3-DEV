@@ -1,0 +1,9 @@
+V3.2.1 SLOTS SMOOTHING DEV
+
+- Minimum visible slot spin: ~1.45 seconds.
+- Reels update less aggressively to reduce DOM/render load.
+- Reels land one at a time with a 230ms stagger.
+- Added a 300ms settle/cooldown before another spin can start.
+- Server-authoritative slot result and payouts are unchanged.
+- No Firebase Functions or Rules changes required.
+- V2 is untouched.
