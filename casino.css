@@ -24,3 +24,13 @@
 .casino-win-flash:after{content:"";position:fixed;inset:0;pointer-events:none;z-index:89;background:radial-gradient(circle,rgba(255,225,125,.24),transparent 62%);animation:winFlash .9s ease-out both}@keyframes winFlash{0%{opacity:0}25%{opacity:1}100%{opacity:0}}
 .chip-row button{transition:transform .15s ease,box-shadow .15s ease,filter .15s ease}.chip-row button:hover{transform:translateY(-3px);filter:brightness(1.12)}.chip-row button.selected{box-shadow:0 0 0 3px rgba(255,224,141,.18),0 8px 20px rgba(0,0,0,.3)}
 .casino-actions button,.casino-primary,.slot-spin{transition:transform .15s ease,filter .15s ease}.casino-actions button:hover,.casino-primary:hover,.slot-spin:hover{transform:translateY(-2px);filter:brightness(1.08)}
+
+/* V3.2 performance pass */
+.casino-game-view,.blackjack-table,.hl-table,.slot-machine{contain:layout paint style}
+.playing-card,.giant-card,.slot-reel{will-change:transform,opacity}
+.casino-waiting{position:relative}
+.casino-waiting:after{content:attr(data-waiting-text);position:absolute;inset:auto 12px 12px;z-index:5;padding:7px 10px;border-radius:999px;background:rgba(4,8,18,.78);border:1px solid rgba(255,211,106,.3);color:#ffe9a9;font-size:10px;font-weight:900;letter-spacing:.08em;pointer-events:none;animation:casinoWaitPulse .9s ease-in-out infinite alternate}
+@keyframes casinoWaitPulse{to{opacity:.55;transform:translateY(-2px)}}
+.spinning .slot-reel{animation:reelPulse .18s linear infinite;filter:none}
+.reel-land{animation:reelLand .18s ease-out}@keyframes reelLand{50%{transform:scale(1.08)}}
+@media (prefers-reduced-motion:reduce){.playing-card.deal-in,.spinning .slot-reel,.casino-waiting:after,.reel-land{animation:none!important}.playing-card,.giant-card,.slot-reel{will-change:auto}}

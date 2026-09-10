@@ -1,0 +1,16 @@
+GENERAL SASSY GAMES V3.2 - PERFORMANCE + POLISH DEV
+
+V3 DEV ONLY. V2 is not changed.
+
+Changes:
+- Reuses Firebase callable function objects instead of recreating them on every click.
+- Slots begin animating immediately while the secure server result is fetched.
+- Slot animation moved to requestAnimationFrame and fewer DOM updates.
+- Removed expensive blur filter during reel spinning.
+- Blackjack and Higher/Lower show immediate lightweight waiting feedback during network round trips.
+- Busy-state updates only gameplay controls instead of every button on the page.
+- Added CSS containment/will-change hints to reduce unnecessary layout/repaint work.
+- Added reduced-motion handling.
+
+Backend security remains server-authoritative. No Firebase Rules changes.
+No Functions deployment required for this version.
